@@ -12,6 +12,6 @@ for player in response.json()['standings']['results']:
     event_info = requests.get(picks_url)
     transfer_cost = event_info.json()['entry_history']['event_transfers_cost']
 
-    print(f"event total {player['event_total']}, player {player['player_name']}, rank {player['rank']}, transfer_cost {transfer_cost}, net_score {player['event_total'] - transfer_cost}")
+    print(f"event total {player['event_total']}, player {player['player_name']}, rank {player['rank']}, transfer_cost {transfer_cost}, net_score {player['event_total'] - transfer_cost}, total_score {player['total']}")
     
     
