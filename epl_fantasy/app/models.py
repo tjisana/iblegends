@@ -22,21 +22,21 @@ class Payment(models.Model):
 
     FANTASY_COST = 200
 
-    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.SET_DEFAULT)
+    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
     paid = models.BooleanField()
-    method = models.CharField(choices=PAYMENT_METHODS)
-    amount = models.IntegerField(max_length=3, default=FANTASY_COST)
+    method = models.CharField(max_length=6, choices=PAYMENT_METHODS)
+    amount = models.IntegerField(default=FANTASY_COST)
 
 
 class WinTotals(models.Model):
-    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.SET_DEFAULT)
-    weekly_wins = models.IntegerField(max_length=2)
-    winnings = models.IntegerField(max_length=3)
+    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
+    weekly_wins = models.IntegerField()
+    winnings = models.IntegerField()
     season_winner = models.BooleanField()
-    total_winnings = models.IntegerField(max_length=4)
+    total_winnings = models.IntegerField()
 
 
 class Points(models.Model):
-    week = models.IntegerField(max_length=2)
-    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.SET_DEFAULT)
+    week = models.IntegerField()
+    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
     max_points = models.BooleanField()

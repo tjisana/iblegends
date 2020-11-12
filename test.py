@@ -7,6 +7,7 @@ url = 'https://fantasy.premierleague.com/api/leagues-classic/984485/standings/?p
 response = requests.get(url)
 
 for player in response.json()['standings']['results']:
+    import pdb; pdb.set_trace()
     entry_id = player['entry']
     picks_url = f"https://fantasy.premierleague.com/api/entry/{entry_id}/event/{event}/picks/"
     event_info = requests.get(picks_url)
