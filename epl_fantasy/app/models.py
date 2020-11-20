@@ -41,4 +41,5 @@ class Points(models.Model):
     player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
     total_points = models.IntegerField(default=0)
     transfer_cost = models.IntegerField(default=0)
+    net_weekly_points = models.IntegerField(default=0)
     max_points = models.BooleanField()
