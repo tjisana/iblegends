@@ -22,7 +22,7 @@ class Payment(models.Model):
 
     FANTASY_COST = 200
 
-    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
+    player = models.OneToOneField(Player, verbose_name='Player', primary_key=True, on_delete=models.PROTECT)
     paid = models.BooleanField()
     method = models.CharField(max_length=6, choices=PAYMENT_METHODS)
     amount = models.IntegerField(default=FANTASY_COST)
