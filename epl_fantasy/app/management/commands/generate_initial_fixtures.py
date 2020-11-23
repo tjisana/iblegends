@@ -49,8 +49,7 @@ class Command(BaseCommand):
 
     def weekly_points(self, player):
         url = 'https://fantasy.premierleague.com/api/event-status/'
-        response = requests.get(url).json()
-        import pdb; pdb.set_trace()
+        response = requests.get(url).json()        
         statuses = [status['bonus_added'] and status['points']=='r' for status in response['status']]
         event = response['status'][0]['event'] if all(statuses) else response['status'][0]['event'] - 1
         
