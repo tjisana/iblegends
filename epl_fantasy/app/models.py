@@ -1,11 +1,15 @@
 from django.db import models
 
+from typing import List
 
 class Player(models.Model):
     id = models.IntegerField(primary_key=True, unique=True, blank=False, editable=False, auto_created=False)
     player_name = models.CharField(max_length=50)
     entry_name = models.CharField(max_length=50)
-    displayed_name = models.CharField(max_length=50) 
+    displayed_name = models.CharField(max_length=50)
+
+    class Meta:
+       ordering = ['displayed_name']
 
 
 class Payment(models.Model):
@@ -39,6 +43,17 @@ class WinTotals(models.Model):
     total_winnings = models.IntegerField()
 
 
+class PointsQuerySet(models.QuerySet):
+    def weekly_results(self) -> List:
+        latest_week = self.last().week
+        results = []
+        for week in range(1, latest_week + 1):
+            row = [week_total.net_weekly_points for week_total in self.filter(week=week).order_by('player')]
+            weekly_winner = ','.join([winner.player.displayed_name for winner in self.filter(week=week, max_points=True).order_by('player')])
+            results.append([week, *row, weekly_winner])            
+        return results
+
+
 class Points(models.Model):
     week = models.IntegerField()
     player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
@@ -46,3 +61,8 @@ class Points(models.Model):
     transfer_cost = models.IntegerField(default=0)
     net_weekly_points = models.IntegerField(default=0)
     max_points = models.BooleanField()
+
+    objects = PointsQuerySet.as_manager()
+
+    class Meta:
+       ordering = ['week', 'player']

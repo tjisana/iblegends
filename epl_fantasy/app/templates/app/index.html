@@ -1,0 +1,23 @@
+<table>
+    <tr>
+        <th>Week</th>
+        {% for player in players %}
+        <th>{{ player.displayed_name }}</th>
+        {% endfor %} 
+        <th>Winner</th>       
+    </tr>    
+
+    {% if all_points %}   
+    {% for row in all_points %}
+        <tr>            
+        {% for cell in row %}            
+            <td>{{ cell }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}        
+    
+    {% else %}
+        <p>Disturbance in the FORCE</p>
+    {% endif %}
+
+</table>

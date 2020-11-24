@@ -1,6 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
+from .models import Player, Points
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    players = Player.objects.all()
+    all_points = Points.objects.weekly_results()
+    
+    context = {
+        'players': players,
+        'all_points': all_points
+        }
+    return render(request, 'app/index.html', context)
