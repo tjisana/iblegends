@@ -39,6 +39,19 @@ class Command(BaseCommand):
                         "amount": Payment.FANTASY_COST
                         }
                 }
+            )
+
+            self.fixture.append(
+                {
+                    "model": "app.WinTotals",
+                    "fields": {                        
+                        "player": player['entry'],
+                        "weekly_wins": 0,
+                        "winnings": 0,
+                        "season_winner": False,
+                        'total_winnings': 0
+                        }
+                }
             )            
 
             self.weekly_points(player['entry'])

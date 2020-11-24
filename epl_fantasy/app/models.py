@@ -29,7 +29,10 @@ class Payment(models.Model):
 
 
 class WinTotals(models.Model):
-    player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
+
+    WEEKLY_PRIZE = 25
+
+    player = models.OneToOneField(Player, verbose_name='Player', primary_key=True, on_delete=models.PROTECT)
     weekly_wins = models.IntegerField()
     winnings = models.IntegerField()
     season_winner = models.BooleanField()
