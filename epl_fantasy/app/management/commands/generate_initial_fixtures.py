@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     "fields": {
                         "player_name": player['player_name'],
                         "entry_name": player['entry_name'],
-                        "displayed_name": player['player_name']
+                        "displayed_name": player['player_name'].split(' ')[0]
                     }
                 }
             )
@@ -51,8 +51,8 @@ class Command(BaseCommand):
         url = 'https://fantasy.premierleague.com/api/event-status/'
         response = requests.get(url).json()        
         statuses = [status['bonus_added'] and status['points']=='r' for status in response['status']]
-        event = response['status'][0]['event'] if all(statuses) else response['status'][0]['event'] - 1
-        
+        #  Only consider a week as finished if all points are finalized and league tables have been completely updated
+        event = response['status'][0]['event'] if all(statuses) and response['leagues'] != 'Updating' else response['status'][0]['event'] - 1        
         for week_number in range(1, event+1):
             url = f"https://fantasy.premierleague.com/api/entry/{player}/event/{week_number}/picks/"            
             response = requests.get(url).json()            
