@@ -77,6 +77,7 @@ class Command(BaseCommand):
                         'player': player,
                         'total_points': response['entry_history']['total_points'],                                        
                         'transfer_cost': response['entry_history']['event_transfers_cost'],
+                        'final_points': True,
                         'net_weekly_points': response['entry_history']['points'] - response['entry_history']['event_transfers_cost'],
                         'max_points': False
                     }
