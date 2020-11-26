@@ -38,4 +38,5 @@ def update_points_table_from_web(current_event, points_are_final):
                 'max_points': False
                 }
         )
-    update_weekly_winner(current_event)
+    if points_are_final:
+        update_weekly_winner(current_event)

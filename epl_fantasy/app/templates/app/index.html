@@ -1,4 +1,8 @@
-<table>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'app/style.css' %}">
+
+<div class="table-wrapper">
+    <table class="fl-table">
     <tr>
         <th>Week</th>
         {% for player in players %}
@@ -21,3 +25,32 @@
     {% endif %}
 
 </table>
+</div>
+
+<br>
+
+<div class="table-wrapper">
+    <table class="fl-table">
+    <tr>
+        <th>Name</th>
+        <th>Weekly Wins</th>
+        <th>Winnings</th>
+        <th>Total Winnings</th>
+    </tr>    
+
+    {% if weekly_win_totals %}   
+    {% for row in weekly_win_totals %}
+        <tr>
+            <td>{{ row.player.displayed_name }}</td>
+            <td>{{ row.weekly_wins }}</td>
+            <td>{{ row.winnings }}</td>
+            <td>{{ row.total_winnings }}</td>
+        </tr>
+    {% endfor %}        
+    
+    {% else %}
+        <p>Disturbance in the FORCE</p>
+    {% endif %}
+
+</table>
+</div>

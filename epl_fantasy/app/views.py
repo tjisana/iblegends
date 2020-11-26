@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .models import Player, Points
+from .models import Player, Points, WinTotals
 from .utils import get_current_event_and_status_from_web, update_points_table_from_web
 
 import requests
@@ -25,6 +25,7 @@ def index(request):
 
     context = {
         'players': all_players,
-        'all_points': Points.objects.weekly_results()
+        'all_points': Points.objects.weekly_results(),
+        'weekly_win_totals': WinTotals.objects.all().order_by('player'),
         }
     return render(request, 'app/index.html', context)
