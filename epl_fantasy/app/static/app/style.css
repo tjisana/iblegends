@@ -61,6 +61,10 @@ h2{
     background: #F8F8F8;
 }
 
+.f1-table td .weekly-winner {
+    background-color: chartreuse;
+}
+
 /* Responsive */
 
 @media (max-width: 767px) {

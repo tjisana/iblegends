@@ -14,11 +14,21 @@ def get_current_event_and_status_from_web():
 
 def update_weekly_winner(week_number):
     max_net_weekly_points = -1000
+    max_total_points = -1000
+    
     for player_weekly_score in Points.objects.filter(week=week_number).order_by('-net_weekly_points'):
         if player_weekly_score.net_weekly_points >= max_net_weekly_points:
             player_weekly_score.max_points = True
             player_weekly_score.save()
             max_net_weekly_points = player_weekly_score.net_weekly_points # this accomodates for the scenario that more than one player has max points
+        else:
+            break
+
+    for player_total_score in Points.objects.filter(week=week_number).order_by('-total_points'):    
+        if player_total_score.total_points >= max_total_points:
+            player_total_score.current_leader = True
+            player_total_score.save()
+            max_total_points = player_total_score.total_points # this accomodates for the scenario that more than one player is current leader
         else:
             break
 

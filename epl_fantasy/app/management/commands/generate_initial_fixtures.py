@@ -78,7 +78,8 @@ class Command(BaseCommand):
                         'transfer_cost': response['entry_history']['event_transfers_cost'],
                         'final_points': True,
                         'net_weekly_points': response['entry_history']['points'] - response['entry_history']['event_transfers_cost'],
-                        'max_points': False
+                        'max_points': False,
+                        'current_leader': False,
                     }
                 }
             )

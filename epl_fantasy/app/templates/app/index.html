@@ -11,18 +11,27 @@
         <th>Winner</th>       
     </tr>    
 
-    {% if all_points %}   
-    {% for row in all_points %}
-        <tr>            
-        {% for cell in row %}            
-            <td>{{ cell }}</td>
-        {% endfor %}
-        </tr>
-    {% endfor %}        
     
-    {% else %}
-        <p>Disturbance in the FORCE</p>
-    {% endif %}
+    {% for row in all_points %}        
+        <tr>            
+            <td>{{ row.1.week }}</td>
+            {% for cell in row %}
+                {% if cell.max_points %}
+                    <td class='weekly-winner'>{{ cell.net_weekly_points }}</td>
+                {% else %}
+                    <td>{{ cell.net_weekly_points }}</td>
+                {% endif %}                
+            {% endfor %}
+            <td>{{ row.1.weekly_winner }}</td>
+        </tr>        
+    {% endfor %}
+    
+    <tr>            
+        <td>Total Diff</td>
+        {% for cell in total_points_diff %}            
+            <td>{{ cell }}</td>            
+        {% endfor %}        
+    </tr>    
 
 </table>
 </div>

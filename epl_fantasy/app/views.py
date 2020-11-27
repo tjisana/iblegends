@@ -26,6 +26,7 @@ def index(request):
     context = {
         'players': all_players,
         'all_points': Points.objects.weekly_results(),
+        'total_points_diff': Points.objects.total_points_diff(),
         'weekly_win_totals': WinTotals.objects.all().order_by('player'),
-        }
+        }    
     return render(request, 'app/index.html', context)

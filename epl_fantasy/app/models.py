@@ -45,13 +45,17 @@ class WinTotals(models.Model):
 
 class PointsQuerySet(models.QuerySet):
     def weekly_results(self) -> List:
-        latest_week = self.last().week
+        latest_week = self.last().week        
         results = []
         for week in range(1, latest_week + 1):
-            row = [week_total.net_weekly_points for week_total in self.filter(week=week).order_by('player')]
-            weekly_winner = ','.join([winner.player.displayed_name for winner in self.filter(week=week, max_points=True).order_by('player')])
-            results.append([week, *row, weekly_winner])            
+            row = [week_total for week_total in self.filter(week=week).order_by('player')]
+            results.append(row)
         return results
+
+    def total_points_diff(self) -> List:
+        latest_week = self.last().week
+        current_total_leader = self.filter(week=latest_week, current_leader=True)[0]
+        return [current_total_leader.total_points - week_points.total_points for week_points in self.filter(week=latest_week).order_by('player')]
 
 
 class Points(models.Model):
@@ -62,8 +66,13 @@ class Points(models.Model):
     final_points = models.BooleanField()
     net_weekly_points = models.IntegerField(default=0)
     max_points = models.BooleanField()
+    current_leader = models.BooleanField()
 
     objects = PointsQuerySet.as_manager()
 
     class Meta:
        ordering = ['week', 'player']
+
+    @property
+    def weekly_winner(self):
+        return ','.join([winner.player.displayed_name for winner in Points.objects.filter(week=self.week, max_points=True).order_by('player')])
