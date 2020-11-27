@@ -1,2 +1,1 @@
-web: gunicorn epl_fantasygunicorn.wsgi --log-file -
-
+web: gunicorn epl_fantasy.wsgi --log-file -
