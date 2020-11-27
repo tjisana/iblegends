@@ -45,7 +45,8 @@ def update_points_table_from_web(current_event, points_are_final):
                 'transfer_cost': response['entry_history']['event_transfers_cost'],
                 'final_points': points_are_final,
                 'net_weekly_points': response['entry_history']['points'] - response['entry_history']['event_transfers_cost'],
-                'max_points': False
+                'max_points': False,
+                'current_leader': False,
                 }
         )
     if points_are_final:
