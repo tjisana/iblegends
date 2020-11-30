@@ -8,6 +8,9 @@ class Player(models.Model):
     entry_name = models.CharField(max_length=50)
     displayed_name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return f'{self.player_name} | {self.entry_name} | {self.displayed_name}'
+    
     class Meta:
        ordering = ['displayed_name']
 
