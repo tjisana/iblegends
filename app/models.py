@@ -60,7 +60,7 @@ class PointsQuerySet(models.QuerySet):
         current_total_leader = self.filter(week=latest_week, current_leader=True)
         if current_total_leader:
             current_total_leader_points = current_total_leader[0]
-            return [current_total_leader_points - week_points.total_points for week_points in self.filter(week=latest_week).order_by('player')]
+            return [current_total_leader_points.total_points - week_points.total_points for week_points in self.filter(week=latest_week).order_by('player')]
         return [0] * self.filter(week=latest_week).count()
 
 

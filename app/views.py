@@ -11,7 +11,7 @@ def index(request):
     all_players = Player.objects.all()
     latest_week_in_db = Points.objects.last().week
     
-    if not points_are_final:
+    if not points_are_final or not Points.objects.last().final_points:
         Points.objects.filter(week=current_event).delete()    
     
     if (current_event - latest_week_in_db) > 1:
