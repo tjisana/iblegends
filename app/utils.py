@@ -1,4 +1,4 @@
-from .models import Points, Player
+from .models import Points, Player, WinTotals
 
 import json
 import os
@@ -31,6 +31,13 @@ def update_weekly_winner(week_number):
             max_total_points = player_total_score.total_points # this accomodates for the scenario that more than one player is current leader
         else:
             break
+    
+    for points in Points.objects.filter(week=week_number, max_points=True):
+        this_week_winner = WinTotals.objects.get(player=points.player)
+        this_week_winner.weekly_wins += 1
+        this_week_winner.winnings += WinTotals.WEEKLY_PRIZE
+        this_week_winner.total_winnings += WinTotals.WEEKLY_PRIZE
+        this_week_winner.save()
 
 def update_points_table_from_web(current_event, points_are_final):
     all_players = Player.objects.all()

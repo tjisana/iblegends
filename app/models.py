@@ -76,6 +76,9 @@ class Points(models.Model):
 
     objects = PointsQuerySet.as_manager()
 
+    def __str__(self):
+        return f'{self.player.displayed_name} | Week: {self.week} | {self.net_weekly_points}'
+    
     class Meta:
        ordering = ['week', 'player']
 
