@@ -71,7 +71,7 @@ class Points(models.Model):
     transfer_cost = models.IntegerField(default=0)
     final_points = models.BooleanField()
     net_weekly_points = models.IntegerField(default=0)
-    max_points = models.BooleanField()
+    max_points = models.BooleanField()  # should be renamed to weekly_winner
     current_leader = models.BooleanField()
 
     objects = PointsQuerySet.as_manager()
