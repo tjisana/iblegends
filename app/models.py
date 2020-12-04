@@ -48,22 +48,24 @@ class WinTotals(models.Model):
     def __str__(self):
         return f"{self.player.displayed_name} | wins: {self.weekly_wins} | {self.winnings}"
 
+    class Meta:
+       ordering = ['-winnings']
+
 
 class PointsQuerySet(models.QuerySet):
     def weekly_results(self) -> List:
         latest_week = self.last().week        
-        results = []
-        for week in range(1, latest_week + 1):
-            row = [week_total for week_total in self.filter(week=week).order_by('player')]
-            results.append(row)
-        return results
+        temp = []
+        for point in self.filter(week=latest_week).order_by('-total_points'):
+            temp.append(self.filter(player=point.player).order_by('week'))        
+        return [a for a in zip(*temp)]
 
     def total_points_diff(self) -> List:        
         latest_week = self.last().week
         current_total_leader = self.filter(week=latest_week, current_leader=True)
         if current_total_leader:
             current_total_leader_points = current_total_leader[0]
-            return [current_total_leader_points.total_points - week_points.total_points for week_points in self.filter(week=latest_week).order_by('player')]
+            return [current_total_leader_points.total_points - week_points.total_points for week_points in self.filter(week=latest_week).order_by('-total_points')]
         return [0] * self.filter(week=latest_week).count()
 
 

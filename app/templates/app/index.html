@@ -5,8 +5,8 @@
     <table class="fl-table">
     <tr>
         <th>Week</th>
-        {% for player in players %}
-        <th>{{ player.displayed_name }}</th>
+        {% for point in all_points.0 %}
+        <th>{{ point.player.displayed_name }}</th>
         {% endfor %} 
         <th>Winner</th>       
     </tr>    
@@ -17,9 +17,9 @@
             <td>{{ row.1.week }}</td>
             {% for cell in row %}
                 {% if cell.max_points %}
-                    <td class='weekly-winner'>{{ cell.net_weekly_points }}</td>
+                    <td class='weekly-winner'>{{ cell.net_weekly_points }}({{cell.transfer_cost}})</td>
                 {% else %}
-                    <td>{{ cell.net_weekly_points }}</td>
+                    <td>{{ cell.net_weekly_points }}({{cell.transfer_cost}})</td>
                 {% endif %}                
             {% endfor %}
             <td>{{ row.1.weekly_winner }}</td>

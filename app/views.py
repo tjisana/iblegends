@@ -7,8 +7,7 @@ import requests
 
 
 def index(request):
-    current_event, points_are_final = get_current_event_and_status_from_web()
-    all_players = Player.objects.all()
+    current_event, points_are_final = get_current_event_and_status_from_web()    
     latest_week_in_db = Points.objects.last().week
     
     if not points_are_final or not Points.objects.last().final_points:
@@ -23,10 +22,9 @@ def index(request):
         update_points_table_from_web(current_event, points_are_final)
 
 
-    context = {
-        'players': all_players,
+    context = {        
         'all_points': Points.objects.weekly_results(),
         'total_points_diff': Points.objects.total_points_diff(),
-        'weekly_win_totals': WinTotals.objects.all().order_by('player'),
+        'weekly_win_totals': WinTotals.objects.all(),
         }    
     return render(request, 'app/index.html', context)
