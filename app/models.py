@@ -41,9 +41,12 @@ class WinTotals(models.Model):
 
     player = models.OneToOneField(Player, verbose_name='Player', primary_key=True, on_delete=models.PROTECT)
     weekly_wins = models.IntegerField()
-    winnings = models.IntegerField()
+    winnings = models.DecimalField(max_digits=6, decimal_places=2)
     season_winner = models.BooleanField()
-    total_winnings = models.IntegerField()
+    total_winnings = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.player.displayed_name} | wins: {self.weekly_wins} | {self.winnings}"
 
 
 class PointsQuerySet(models.QuerySet):

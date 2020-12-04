@@ -1,5 +1,6 @@
 from .models import Points, Player, WinTotals
 
+import decimal
 import json
 import os
 import requests
@@ -32,11 +33,13 @@ def update_weekly_winner(week_number):
         else:
             break
     
-    for points in Points.objects.filter(week=week_number, max_points=True):
+    this_week_winners_points = Points.objects.filter(week=week_number, max_points=True)
+    num_of_this_week_winners = this_week_winners_points.count()
+    for points in this_week_winners_points:        
         this_week_winner = WinTotals.objects.get(player=points.player)
         this_week_winner.weekly_wins += 1
-        this_week_winner.winnings += WinTotals.WEEKLY_PRIZE
-        this_week_winner.total_winnings += WinTotals.WEEKLY_PRIZE
+        this_week_winner.winnings += decimal.Decimal((WinTotals.WEEKLY_PRIZE / num_of_this_week_winners))
+        this_week_winner.total_winnings += decimal.Decimal(WinTotals.WEEKLY_PRIZE / num_of_this_week_winners)
         this_week_winner.save()
 
 def update_points_table_from_web(current_event, points_are_final):
