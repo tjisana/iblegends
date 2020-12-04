@@ -68,6 +68,8 @@ class PointsQuerySet(models.QuerySet):
 
 
 class Points(models.Model):
+    TRANSFER_POINTS_COST = 4
+
     week = models.IntegerField()
     player = models.ForeignKey(Player, verbose_name='Player', on_delete=models.PROTECT)
     total_points = models.IntegerField(default=0)
