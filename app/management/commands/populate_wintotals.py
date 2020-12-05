@@ -17,9 +17,4 @@ class Command(BaseCommand):
         for week_number in range(1, last_finalized_week+1):
             update_weekly_winner(week_number)
         self.stdout.write(self.style.SUCCESS('Max points columns updated in Points table'))
-        for weekly_winner in Points.objects.filter(max_points=True):
-            winner = WinTotals.objects.get(player=weekly_winner.player)
-            winner.weekly_wins += 1
-            winner.winnings += WinTotals.WEEKLY_PRIZE
-            winner.total_winnings += WinTotals.WEEKLY_PRIZE
-            winner.save()
+        self.stdout.write(self.style.SUCCESS('Weekly winnings updated'))

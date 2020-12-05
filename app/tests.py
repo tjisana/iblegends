@@ -68,7 +68,7 @@ class EplFanstasyTestCase(TestCase):
                 httpretty.GET,
                 f"https://fantasy.premierleague.com/api/entry/{player.id}/event/{current_event}/picks/",
                 body=json.dumps(
-                    {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0}}
+                    {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0, "overall_rank":point}}
                 )
             )        
         
@@ -121,7 +121,7 @@ class EplFanstasyTestCase(TestCase):
                 f"https://fantasy.premierleague.com/api/entry/{player.id}/event/{current_event}/picks/",
                 body=json.dumps(
                     {"active_chip":None,"automatic_subs":[],
-                    "entry_history":{"event":current_event,"points":point,"total_points":week2_total,"event_transfers":transfer,"event_transfers_cost":transfer * Points.TRANSFER_POINTS_COST}}
+                    "entry_history":{"event":current_event,"points":point,"total_points":week2_total,"event_transfers":transfer,"event_transfers_cost":transfer * Points.TRANSFER_POINTS_COST, "overall_rank":point}}
                 )
             )        
         
@@ -153,7 +153,7 @@ class EplFanstasyTestCase(TestCase):
                 httpretty.GET,
                 f"https://fantasy.premierleague.com/api/entry/{player.id}/event/{current_event}/picks/",
                 body=json.dumps(
-                    {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0}}
+                    {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0, "overall_rank":point}}
                 )
             )        
         update_points_table_from_web(current_event, points_are_final)
@@ -192,7 +192,7 @@ class EplFanstasyTestCase(TestCase):
                 f"https://fantasy.premierleague.com/api/entry/{player.id}/event/{current_event}/picks/",
                 body=json.dumps(
                     {"active_chip":None,"automatic_subs":[],
-                    "entry_history":{"event":current_event,"points":point,"total_points":week2_total,"event_transfers":transfer,"event_transfers_cost":transfer * Points.TRANSFER_POINTS_COST}}
+                    "entry_history":{"event":current_event,"points":point,"total_points":week2_total,"event_transfers":transfer,"event_transfers_cost":transfer * Points.TRANSFER_POINTS_COST, "overall_rank":point}}
                 )
             )        
         
@@ -229,7 +229,7 @@ class EplFanstasyTestCase(TestCase):
                 httpretty.GET,
                 f"https://fantasy.premierleague.com/api/entry/{player.id}/event/{current_event}/picks/",
                 body=json.dumps(
-                    {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0}}
+                    {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0, "overall_rank":point}}
                 )
             )        
         update_points_table_from_web(current_event, points_are_final)

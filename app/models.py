@@ -55,7 +55,8 @@ class WinTotals(models.Model):
 class PointsQuerySet(models.QuerySet):
     def weekly_results(self) -> List:
         latest_week = self.last().week        
-        temp = []
+        temp = []  # should provide an explanation why variable is named temp
+        #  used this approach to order Points. E.g I wanted week's 1 results to be order by who was 1st 2nd 3rd etc in current week
         for point in self.filter(week=latest_week).order_by('-total_points'):
             temp.append(self.filter(player=point.player).order_by('week'))        
         return [a for a in zip(*temp)]
@@ -65,8 +66,17 @@ class PointsQuerySet(models.QuerySet):
         current_total_leader = self.filter(week=latest_week, current_leader=True)
         if current_total_leader:
             current_total_leader_points = current_total_leader[0]
-            return [current_total_leader_points.total_points - week_points.total_points for week_points in self.filter(week=latest_week).order_by('-total_points')]
+            return [f"{week_points.total_points:,d} [{current_total_leader_points.total_points - week_points.total_points:,d}]" for week_points in self.filter(week=latest_week).order_by('-total_points')]
         return [0] * self.filter(week=latest_week).count()
+
+    def get_win_totals_with_overall_rank(self) -> List:
+        latest_week = self.last().week
+        overall_ranks = Points.objects.filter(week=latest_week)
+        results = []
+        for win_totals in WinTotals.objects.all():
+            results.append([win_totals, f'{overall_ranks.get(player=win_totals.player).overall_rank:,d}'])
+        return results
+
 
 
 class Points(models.Model):
@@ -80,6 +90,7 @@ class Points(models.Model):
     net_weekly_points = models.IntegerField(default=0)
     max_points = models.BooleanField()  # should be renamed to weekly_winner
     current_leader = models.BooleanField()
+    overall_rank = models.IntegerField(default=0)
 
     objects = PointsQuerySet.as_manager()
 

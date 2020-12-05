@@ -80,6 +80,7 @@ class Command(BaseCommand):
                         'net_weekly_points': response['entry_history']['points'] - response['entry_history']['event_transfers_cost'],
                         'max_points': False,
                         'current_leader': False,
+                        'overall_rank': response['entry_history']['overall_rank']
                     }
                 }
             )

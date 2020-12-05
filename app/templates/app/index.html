@@ -27,7 +27,7 @@
     {% endfor %}
     
     <tr>            
-        <td>Total Diff</td>
+        <td>Total</td>
         {% for cell in total_points_diff %}            
             <td>{{ cell }}</td>            
         {% endfor %}        
@@ -44,16 +44,16 @@
         <th>Name</th>
         <th>Weekly Wins</th>
         <th>Winnings</th>
-        <th>Total Winnings</th>
+        <th>Overall Rank</th>
     </tr>    
 
     {% if weekly_win_totals %}   
     {% for row in weekly_win_totals %}
         <tr>
-            <td>{{ row.player.displayed_name }}</td>
-            <td>{{ row.weekly_wins }}</td>
-            <td>{{ row.winnings }}</td>
-            <td>{{ row.total_winnings }}</td>
+            <td>{{ row.0.player.displayed_name }}</td>
+            <td>{{ row.0.weekly_wins }}</td>
+            <td>{{ row.0.winnings }}</td>
+            <td>{{ row.1 }}</td>
         </tr>
     {% endfor %}        
     
