@@ -62,12 +62,13 @@ class PointsQuerySet(models.QuerySet):
         return [a for a in zip(*temp)]
 
     def total_points_diff(self) -> List:        
-        latest_week = self.last().week
-        current_total_leader = self.filter(week=latest_week, current_leader=True)
-        if current_total_leader:
-            current_total_leader_points = current_total_leader[0]
-            return [f"{week_points.total_points:,d} [{current_total_leader_points.total_points - week_points.total_points:,d}]" for week_points in self.filter(week=latest_week).order_by('-total_points')]
-        return [0] * self.filter(week=latest_week).count()
+        latest_point = self.last()
+        current_week = latest_point.week if latest_point.final_points else latest_point.week-1
+        if current_week == 0:
+          return [0] * self.count()
+
+        current_total_leader_points = self.filter(week=current_week, current_leader=True)[0]
+        return [f"{week_points.total_points:,d} [{current_total_leader_points.total_points - week_points.total_points:,d}]" for week_points in self.filter(week=current_week).order_by('-total_points')]
 
     def get_win_totals_with_overall_rank(self) -> List:
         latest_week = self.last().week
