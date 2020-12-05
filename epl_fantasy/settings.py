@@ -34,7 +34,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['eplfantasy.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['eplfantasy.herokuapp.com','127.0.0.1', 'iblegends.com']
 
 # Application definition
 
