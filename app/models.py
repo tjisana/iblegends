@@ -63,9 +63,7 @@ class PointsQuerySet(models.QuerySet):
 
     def total_points_diff(self) -> List:        
         latest_point = self.last()
-        current_week = latest_point.week if latest_point.final_points else latest_point.week-1
-        if current_week == 0:
-          return [0] * self.count()
+        current_week = latest_point.week
 
         current_total_leader_points = self.filter(week=current_week, current_leader=True)[0]
         return [f"{week_points.total_points:,d} [{current_total_leader_points.total_points - week_points.total_points:,d}]" for week_points in self.filter(week=current_week).order_by('-total_points')]
