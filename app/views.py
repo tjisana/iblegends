@@ -13,8 +13,7 @@ def index(request):
     if not points_are_final or not Points.objects.last().final_points:
         Points.objects.filter(week=current_event).delete()    
     
-    if (current_event - latest_week_in_db) > 1:
-        print([week for week in range(latest_week_in_db+1, current_event)])
+    if (current_event - latest_week_in_db) > 1:        
         for week in range(latest_week_in_db+1, current_event):
             update_points_table_from_web(week, True)
 
