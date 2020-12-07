@@ -86,7 +86,7 @@ class EplFanstasyTestCase(TestCase):
     @httpretty.activate
     def test_update_points_table_from_web_multiple_weeks(self):
         """
-            Test Points table is updated with more than one week of data
+            Test Points table is updated with more than one week of data. Most importantly ensure transfer cost is subtracted from score
         """
         # WEEK 1
         week1_points = [49, 50, 51, 52]  # player 1, 2, 3, 4    
@@ -248,4 +248,9 @@ class EplFanstasyTestCase(TestCase):
         player4_wintotals = WinTotals.objects.get(player=Player.objects.get(displayed_name='P4'))
         self.assertEqual(player4_wintotals.weekly_wins, 1)
         self.assertEqual(player4_wintotals.winnings, WinTotals.WEEKLY_PRIZE / 2)
-        self.assertEqual(player4_wintotals.total_winnings, WinTotals.WEEKLY_PRIZE / 2) 
+        self.assertEqual(player4_wintotals.total_winnings, WinTotals.WEEKLY_PRIZE / 2)
+
+        player3_wintotals = WinTotals.objects.get(player=Player.objects.get(displayed_name='P3'))
+        self.assertEqual(player3_wintotals.weekly_wins, 1)
+        self.assertEqual(player3_wintotals.winnings, WinTotals.WEEKLY_PRIZE / 2)
+        self.assertEqual(player3_wintotals.total_winnings, WinTotals.WEEKLY_PRIZE / 2) 

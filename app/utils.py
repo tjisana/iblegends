@@ -6,6 +6,9 @@ import os
 import requests
 
 
+#functions 
+
+
 def get_current_event_and_status_from_web():
     url = 'https://fantasy.premierleague.com/api/event-status/'
     response = requests.get(url).json()        
@@ -23,9 +26,8 @@ def update_current_leader(week_number):
         else:
             break
 
-def update_weekly_winner(week_number):
-    max_net_weekly_points = -1000    
-    
+def update_weekly_max_points(week_number):
+    max_net_weekly_points = -1000
     for player_weekly_score in Points.objects.filter(week=week_number).order_by('-net_weekly_points'):
         if player_weekly_score.net_weekly_points >= max_net_weekly_points:
             player_weekly_score.max_points = True
@@ -34,12 +36,11 @@ def update_weekly_winner(week_number):
         else:
             break
 
-    update_current_leader(week_number)
     
-    
+def update_win_totals(week_number):
     this_week_winners_points = Points.objects.filter(week=week_number, max_points=True)
     num_of_this_week_winners = this_week_winners_points.count()
-    for points in this_week_winners_points:        
+    for points in this_week_winners_points:
         this_week_winner = WinTotals.objects.get(player=points.player)
         this_week_winner.weekly_wins += 1
         this_week_winner.winnings += decimal.Decimal((WinTotals.WEEKLY_PRIZE / num_of_this_week_winners))
@@ -65,6 +66,7 @@ def update_points_table_from_web(current_event, points_are_final):
                 }
         )        
     if points_are_final:
-        update_weekly_winner(current_event)
-    else:
-        update_current_leader(current_event)
+        update_weekly_max_points(current_event)
+        update_win_totals(current_event)
+    
+    update_current_leader(current_event)
