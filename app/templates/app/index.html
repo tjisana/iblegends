@@ -29,7 +29,14 @@
     {% endfor %}
     
     <tr>            
-        <td>Total</td>
+        <td>Transfer Cost</td>
+        {% for cell in total_transfer_cost_all_players %}            
+            <td>{{ cell.total_transfer_cost }}</td>            
+        {% endfor %}        
+    </tr>
+    
+    <tr>            
+        <td>Total Points</td>
         {% for cell in total_points_diff %}            
             <td>{{ cell }}</td>            
         {% endfor %}        
