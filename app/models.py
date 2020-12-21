@@ -80,7 +80,7 @@ class PointsQuerySet(models.QuerySet):
 
     def total_transfer_cost_all_players(self) -> List:
         latest_week = self.last().week
-        return Player.objects.annotate(total_transfer_cost=models.Sum('point__transfer_cost')).filter(point__week=11).order_by('-point__total_points')
+        return Player.objects.annotate(total_transfer_cost=models.Sum('point__transfer_cost')).filter(point__week=latest_week).order_by('-point__total_points')
 
 
 class Points(models.Model):
