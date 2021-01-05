@@ -9,17 +9,24 @@ from .utils import get_current_event_and_status_from_web, update_points_table_fr
 import json
 
 
-class EplFanstasyTestCase(TestCase):
+class EplFanstasyTest(TestCase):
     def setUp(self):
         Player.objects.create(player_name='Player Name 1', entry_name="Team 1", displayed_name='P1')
         Player.objects.create(player_name='Player Name 2', entry_name="Team 2", displayed_name='P2')
         Player.objects.create(player_name='Player Name 3', entry_name="Team 3", displayed_name='P3')
         Player.objects.create(player_name='Player Name 4', entry_name="Team 4", displayed_name='P4')
-        
+
         for player in Player.objects.all():
             Payment.objects.create(player=player, paid=True, method='Venmo', amount=Payment.FANTASY_COST)
-            WinTotals.objects.create(player=player, weekly_wins=0, winnings=0, season_winner=False, total_winnings=0)  
-    
+            WinTotals.objects.create(player=player, weekly_wins=0, winnings=0, season_winner=False, total_winnings=0)
+
+    #test models
+    def test_player_creation(self):
+        p1 = Player.objects.get(displayed_name='P1')
+        self.assertEqual(p1.__str__(), 'Player Name 1 | Team 1 | P1')
+        p1_win_totals = WinTotals.objects.get(player=p1)
+        self.assertEqual(p1_win_totals.__str__(), 'P1 | wins: 0 | 0.00')
+
     @httpretty.activate
     def test_get_current_event_and_status_from_web(self):
         """
@@ -46,7 +53,7 @@ class EplFanstasyTestCase(TestCase):
             Test Points table is updated
         """
 
-        # WEEK 1 
+        # WEEK 1
         httpretty.register_uri(
             httpretty.GET,
             'https://fantasy.premierleague.com/api/event-status/',
@@ -70,11 +77,12 @@ class EplFanstasyTestCase(TestCase):
                 body=json.dumps(
                     {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0, "overall_rank":point}}
                 )
-            )        
-        
-        update_points_table_from_web(current_event, points_are_final)
-        player4_week1_points = Points.objects.get(week=1, player__displayed_name='P4') 
+            )
 
+        update_points_table_from_web(current_event, points_are_final)
+        player4_week1_points = Points.objects.get(week=1, player__displayed_name='P4')
+
+        self.assertEqual(player4_week1_points.__str__(), f'{player4_week1_points.player.displayed_name} | Week: {player4_week1_points.week} | {player4_week1_points.net_weekly_points}')
         self.assertEqual(player4_week1_points.total_points, week1_points[3])
         self.assertEqual(player4_week1_points.transfer_cost, 0)
         self.assertEqual(player4_week1_points.final_points, points_are_final)
@@ -89,14 +97,14 @@ class EplFanstasyTestCase(TestCase):
             Test Points table is updated with more than one week of data
         """
         # WEEK 1
-        week1_points = [49, 50, 51, 52]  # player 1, 2, 3, 4    
+        week1_points = [49, 50, 51, 52]  # player 1, 2, 3, 4
         for player, point in zip(Player.objects.all(), week1_points):
             Points.objects.create(week=1, player=player, total_points=point, transfer_cost=0, final_points=True, net_weekly_points=point, max_points=False, current_leader=False)
         player4_week1 = Points.objects.get(week=1, player__displayed_name='P4')
         player4_week1.max_points=True
         player4_week1.current_leader=True
 
-        # WEEK 2 
+        # WEEK 2
         httpretty.register_uri(
             httpretty.GET,
             'https://fantasy.premierleague.com/api/event-status/',
@@ -123,12 +131,12 @@ class EplFanstasyTestCase(TestCase):
                     {"active_chip":None,"automatic_subs":[],
                     "entry_history":{"event":current_event,"points":point,"total_points":week2_total,"event_transfers":transfer,"event_transfers_cost":transfer * Points.TRANSFER_POINTS_COST, "overall_rank":point}}
                 )
-            )        
-        
+            )
+
         update_points_table_from_web(current_event, points_are_final)
         for point_in_db, week2_point_from_web, transfer in zip(Points.objects.filter(week=current_event).order_by('player__displayed_name'), week2_points, transfers):            
             self.assertEqual(point_in_db.net_weekly_points, week2_point_from_web - transfer * Points.TRANSFER_POINTS_COST)
-                
+
     @httpretty.activate
     def test_update_weekly_winner(self):
         """
@@ -155,19 +163,19 @@ class EplFanstasyTestCase(TestCase):
                 body=json.dumps(
                     {"active_chip":None,"automatic_subs":[],"entry_history":{"event":1,"points":point,"total_points":point,"event_transfers":0,"event_transfers_cost":0, "overall_rank":point}}
                 )
-            )        
+            )
         update_points_table_from_web(current_event, points_are_final)
         week1_winner = Points.objects.get(week=1, player__displayed_name='P4')
         self.assertTrue(week1_winner.max_points)
         self.assertTrue(week1_winner.current_leader)
         self.assertEqual(week1_winner.weekly_winner, 'P4')
-        
+
         player4_wintotals = WinTotals.objects.get(player=Player.objects.get(displayed_name='P4'))
         self.assertEqual(player4_wintotals.weekly_wins, 1)
         self.assertEqual(player4_wintotals.winnings, WinTotals.WEEKLY_PRIZE)
         self.assertEqual(player4_wintotals.total_winnings, WinTotals.WEEKLY_PRIZE)
 
-        # WEEK 2 
+        # WEEK 2
         httpretty.register_uri(
             httpretty.GET,
             'https://fantasy.premierleague.com/api/event-status/',
@@ -194,8 +202,8 @@ class EplFanstasyTestCase(TestCase):
                     {"active_chip":None,"automatic_subs":[],
                     "entry_history":{"event":current_event,"points":point,"total_points":week2_total,"event_transfers":transfer,"event_transfers_cost":transfer * Points.TRANSFER_POINTS_COST, "overall_rank":point}}
                 )
-            )        
-        
+            )
+
         update_points_table_from_web(current_event, points_are_final)
         self.assertEqual(Points.objects.get(week=2, player__displayed_name='P2').current_leader, False)
         self.assertTrue(Points.objects.get(week=2, player__displayed_name='P4').current_leader)
@@ -203,7 +211,7 @@ class EplFanstasyTestCase(TestCase):
 
         self.assertEqual(WinTotals.objects.get(player__displayed_name='P4').weekly_wins, 2)
         self.assertEqual(WinTotals.objects.get(player__displayed_name='P4').winnings, 2 * WinTotals.WEEKLY_PRIZE)
-        
+
 
     @httpretty.activate
     def test_update_points_table_from_web_multiple_weekly_winners(self):
@@ -244,7 +252,7 @@ class EplFanstasyTestCase(TestCase):
         self.assertTrue(week1_player3_points.current_leader)
         self.assertEqual(week1_player3_points.weekly_winner, 'P3,P4')
 
-        
+
         player4_wintotals = WinTotals.objects.get(player=Player.objects.get(displayed_name='P4'))
         self.assertEqual(player4_wintotals.weekly_wins, 1)
         self.assertEqual(player4_wintotals.winnings, WinTotals.WEEKLY_PRIZE / 2)

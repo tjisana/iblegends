@@ -55,7 +55,7 @@ def update_points_table_from_web(current_event, points_are_final):
             **{
                 'week': current_event,
                 'player': player,
-                'total_points': response['entry_history']['total_points'],   
+                'total_points': response['entry_history']['total_points'],
                 'transfer_cost': response['entry_history']['event_transfers_cost'],
                 'final_points': points_are_final,
                 'net_weekly_points': response['entry_history']['points'] - response['entry_history']['event_transfers_cost'],
@@ -63,7 +63,7 @@ def update_points_table_from_web(current_event, points_are_final):
                 'current_leader': False,
                 'overall_rank': response['entry_history']['overall_rank']
                 }
-        )        
+        )
     if points_are_final:
         update_weekly_winner(current_event)
     else:
