@@ -1,6 +1,7 @@
 venv/
 __pycache__/
 .vscode/
+htmlcov/
 .DS_Store
 db.sqlite3
 
