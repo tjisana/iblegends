@@ -23,20 +23,19 @@ def update_current_leader(week_number: int) -> None:
         else:
             break
 
-def get_captain_vice_captain_bench_points(all_footballers_week_points: dict, week: int, player: Player, players_current_rank: dict) -> tuple:
-    url = f"https://fantasy.premierleague.com/api/entry/{player.id}/event/{week}/picks/"
+def get_captain_vice_captain_bench_points(all_footballers_week_points: dict, week: int, point: Points, players_current_rank: dict) -> tuple:
+    url = f"https://fantasy.premierleague.com/api/entry/{point.player.id}/event/{week}/picks/"
     picks = requests.get(url).json()['picks']
 
     bench_points = 0
     for pick in picks:
         if pick['is_captain']:
-            captain_points = all_footballers_week_points[pick['element']-1]['stats']['total_points'] * pick['multiplier']
+            captain_points = all_footballers_week_points['elements'][pick['element']-1]['stats']['total_points'] * pick['multiplier']
         elif pick['is_vice_captain']:
-            vice_captain_points = all_footballers_week_points[pick['element']-1]['stats']['total_points'] * pick['multiplier']
+            vice_captain_points = all_footballers_week_points['elements'][pick['element']-1]['stats']['total_points'] * pick['multiplier']
         elif pick['multiplier'] == 0:
-            bench_points+=all_footballers_week_points[pick['element']-1]['stats']['total_points'] * 1
-
-    return captain_points, vice_captain_points, bench_points, players_current_rank[player.id]
+            bench_points+=all_footballers_week_points['elements'][pick['element']-1]['stats']['total_points'] * 1
+    return point, captain_points, vice_captain_points, bench_points, players_current_rank[point.player.id]
 
 def weekly_winner_tie_breaker(this_week_winners_points: Points):
     """
@@ -49,13 +48,13 @@ def weekly_winner_tie_breaker(this_week_winners_points: Points):
     current_week = this_week_winners_points[0].week
     url = f"https://fantasy.premierleague.com/api/event/{current_week}/live/"
     all_footballers_week_points = requests.get(url).json()
-    players_current_rank = {player.id: -1 * index for index, player in enumerate(Points.objects.filter(week=current_week).order_by('-total_points'), start=1)}
+    players_current_rank = {point.player.id: -1 * index for index, point in enumerate(Points.objects.filter(week=current_week).order_by('-total_points'), start=1)}
     for point in this_week_winners_points:
-        player = point.player
-        cap_vice_bench_points.append(get_captain_vice_captain_bench_points(all_footballers_week_points, current_week, player, players_current_rank))
+        cap_vice_bench_points.append(get_captain_vice_captain_bench_points(all_footballers_week_points, current_week, point, players_current_rank))
 
     for point in sorted(cap_vice_bench_points, key=lambda e: (e[1], e[2], e[3], e[4]))[:-1]:
         point[0].max_points = False
+        point[0].save()
 
 def update_weekly_winner(week_number: int):
     max_net_weekly_points = -1000
